@@ -1,0 +1,95 @@
+"Good progress on the UI changes! But there are still several issues that need fixing:
+CRITICAL ISSUES TO FIX:
+
+Timer Position Problem:
+
+The timer is now positioned in front of the blackboard and blocking the view
+FIX: Move the timer to top-right corner or another clear area away from gameplay elements
+
+
+Difficulty Levels Not Working:
+
+All difficulty levels feel exactly the same - no difference between Rookie/Veteran/Substitute/Principal
+IMPLEMENT REAL DIFFERENCES:
+javascript// Rookie Teacher (Easy)
+teacher.speed = 1.0;
+teacher.detectionRange = 60;
+teacher.patrolDelay = 3000ms;
+
+// Veteran Teacher (Medium) 
+teacher.speed = 1.5;
+teacher.detectionRange = 80;
+teacher.patrolDelay = 2000ms;
+
+// Substitute Teacher (Hard)
+teacher.speed = 2.0;
+teacher.detectionRange = 100;
+teacher.patrolDelay = 1000ms;
+
+// Principal (Expert)
+teacher.speed = 2.5;
+teacher.detectionRange = 120;
+teacher.patrolDelay = 500ms;
+
+
+
+Mission System Still Too Simple:
+
+Missions are still just "click E" from anywhere
+MAKE STRATEGIC: Student must be physically near objects:
+
+Clock Hack: Within 50 pixels of wall clock
+Chalk Drop: Within 50 pixels of blackboard
+Fake Bell: Within 50 pixels of intercom
+Paper Airplane: Within 50 pixels of any desk
+
+
+Add visual feedback when student is close enough (highlight the object)
+
+
+Game Start Bug:
+
+When changing difficulty, it shows "teacher caught you" instead of starting the level
+FIX: Reset game state properly when difficulty changes:
+javascriptfunction startNewGame() {
+    confusionMeter = 0;
+    stealthMeter = 100;
+    gameTime = 0;
+    gameState = 'playing';
+    // Reset student and teacher positions
+}
+
+
+
+ADD PUNISHMENT MECHANIC (VERY IMPORTANT):
+
+When student gets caught (stealth decreases), confusion meter should ALSO decrease
+Scale the punishment by difficulty level:
+javascriptfunction onStudentCaught() {
+    // Stealth penalty
+    stealthMeter -= stealthPenalty;
+    
+    // Confusion penalty (increases with difficulty)
+    const confusionPenalty = {
+        0: 5,   // Rookie: -5 confusion when caught
+        1: 10,  // Veteran: -10 confusion when caught  
+        2: 15,  // Substitute: -15 confusion when caught
+        3: 20   // Principal: -20 confusion when caught
+    };
+    
+    confusionMeter = Math.max(0, confusionMeter - confusionPenalty[currentDifficulty]);
+    
+    // Visual feedback
+    showFloatingText("CAUGHT! -" + confusionPenalty[currentDifficulty] + " CONFUSION!", "red");
+}
+
+
+
+
+POSITIONING FIXES NEEDED:
+
+Timer: Move to top-right corner
+Game buttons: Keep in corner but make sure they don't overlap gameplay
+Mission prompts: Show "Press E" only when near valid objects
+
+This punishment system makes higher difficulties much more challenging because getting caught not only hurts stealth but also sets back your progress toward the 100% confusion goal!"
